@@ -94,8 +94,8 @@ Matrix4 Affin::matRotateY(float rotationY) {
 /// </summary>
 Matrix4 Affin::matRotateZ(float rotationZ) {
 	float rotRad = radConvert(rotationZ);
-	float cosRad = cos(rotRad);
-	float sinRad = sin(rotRad);
+	float cosRad = cosf(rotRad);
+	float sinRad = sinf(rotRad);
 	Matrix4 matRotZ;
 
 	matRotZ = { cosRad, sinRad, 0.0f, 0.0f, -sinRad, cosRad, 0.0f, 0.0f,

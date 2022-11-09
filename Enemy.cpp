@@ -1,4 +1,6 @@
 #include "Enemy.h"
+#include "Affin.h"
+#include <cassert>
 
 Enemy::Enemy() {
 	worldTransForm.Initialize();
@@ -6,6 +8,7 @@ Enemy::Enemy() {
 	isDead = false;
 	YTmp = { 0,1,0 };
 	//speed = 0.0004f;
+
 }
 
 Enemy::~Enemy() {}
@@ -23,8 +26,21 @@ void Enemy::CalcVec(Vector3 obj)
 	enemyFront.normalize();
 }
 
+void Enemy::Initialize(Model* model)
+{
+	assert(model);
+	model_ = model;
+}
+
 
 void Enemy::Update(Vector3 obj) {
+
+	//デスフラグの立った
+	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)
+		{
+			return bullet->IsDead();
+		});
+
 	//ベクトル計算
 	CalcVec(obj);
 
@@ -51,7 +67,15 @@ void Enemy::Update(Vector3 obj) {
 	//結果を反映
 	worldTransForm.TransferMatrix();
 
+	//弾更新
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	{
+		bullet->Update();
+	}
+
 	Hit();
+
+	Fire();
 }
 
 //void Enemy::Pop() {
@@ -80,6 +104,23 @@ void Enemy::Hit() {
 	//		}
 	//	}
 	//}
+}
+
+void Enemy::Fire()
+{
+	//敵の座標コピー
+	Vector3 position = worldTransForm.translation_;
+	//弾の速度
+	const float kBulletSpeed = 1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+	//速度ベクトルを自機の向きに合わせて回転させる
+	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
+	//弾を生成し、初期化
+	std::unique_ptr<EnemyBullet>newBullet = std::make_unique<EnemyBullet>();
+	newBullet->Initialize(model_, position, velocity);
+
+	//弾を登録する
+	bullets_.push_back(std::move(newBullet));
 }
 
 void Enemy::OnColision() {

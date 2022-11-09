@@ -53,7 +53,7 @@ public: // メンバ関数
 
 	void HomeOnColision();
 
-	int CheckAlive(Enemy enemys[]);
+	//int CheckAlive(Enemy enemys[]);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -66,19 +66,20 @@ private: // メンバ変数
 	/// </summary>
 	/// 
 	/// 
-	uint32_t textureHandle_[10];
+	uint32_t textureHandle_[11];
 
-	Sprite* title = nullptr;
-	Sprite* tutoliar = nullptr;
-	Sprite* gameWin = nullptr;
-	Sprite* gameOver = nullptr;
+	Sprite* title_ = nullptr;
+	Sprite* tutoliar_ = nullptr;
+	Sprite* gameWin_ = nullptr;
+	Sprite* gameOver_ = nullptr;
+	Sprite* Player = nullptr;
 	Model* model_ = nullptr;
 
 	WorldTransform objHome_;
-	int objHomeR = 4;			// 中心ブロック半径
-	int homeLife = 20;
-	int isDamage = 0;
-	int damTimer = 0;
+	int objHomeR_ = 4;			// 中心ブロック半径
+	int homeLife_ = 20;
+	bool isDamage_ = false;
+	int damTimer_ = 0;
 
 	WorldTransform floor_;
 	WorldTransform worldTransforms_[10];
@@ -87,38 +88,39 @@ private: // メンバ変数
 	DebugCamera* debugCamera_ = nullptr;
 
 	//カメラ上方向の角度
-	float viewAngle = 0.0f;
+	float viewAngle_ = 0.0f;
 
 	//弾
 	//Bullet* bullet_[50];
 	//弾
 	std::list<std::unique_ptr<Bullet>> bullets_;
-	Vector3 pos;
-	Vector3 moveBul;
-	Vector3 velo;
-	Vector3 ai;
+	Vector3 pos_;
+	Vector3 moveBul_;
+	Vector3 velo_;
+	Vector3 ai_;
 
-	float KEyeSpeed = 0.1f;
-	float addspeed = 0.0f;
+	float KEyeSpeed_ = 0.1f;
+	float addspeed_ = 0.0f;
 
 
 	// 3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
-	float kDistancePlayerTo3DReticle = 15.0f;
-	Vector3 ret3DPos;
-	Vector3 myPos;
-	Vector3 resultRet;
+	float kDistancePlayerTo3DReticle_ = 15.0f;
+	Vector3 ret3DPos_;
+	Vector3 myPos_;
+	Vector3 resultRet_;
 	// 敵
-	Enemy enemys[50];
-	int popTime;
-	int coolTime;
-	int killCounter;
-	int popCount = 0;
-	int wave = 0;
-	int waitTimer = 250;
+	Enemy enemy_;
+
+	int popTime_;
+	int coolTime_;
+	int killCounter_;
+	int popCount_ = 0;
+	int wave_ = 0;
+	int waitTimer_ = 250;
 
 	// シーン
-	int scene = 0;
+	int scene_ = 0;
 
 	//yの仮ベクトル
 	Vector3 yTmpVec;
@@ -133,8 +135,10 @@ private: // メンバ変数
 	//背面ベクトル
 	Vector3 behindVec;
 
-	int a;
 	float kCharacterSpeed = 0.1f;
 	Vector3 posA, posB;
 	Vector3 move = { 0,0,0 };
+
+	float lenR_ = 0.0f;
+	float dist_ = 0.0f;
 };
