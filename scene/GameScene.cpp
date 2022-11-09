@@ -97,6 +97,8 @@ void GameScene::Initialize() {
 	viewProjection_.target = Affin::GetWorldTrans(worldTransforms_[0].matWorld_);
 	viewProjection_.eye = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
 	viewProjection_.UpdateMatrix();
+
+	//敵キャラに自キャラのアドレスを渡す
 }
 
 void GameScene::Update() {
@@ -128,33 +130,33 @@ void GameScene::Update() {
 		bullets_.remove_if([](std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); });
 
 		//敵ポップ
-		if (waitTimer == 0) {
-			if (popCount > 0) {
-				if (popTime == 0) {
-					for (int i = 0; i < _countof(enemys); i++) {
-						if (enemys[i].isDead == true) {
-							enemys[i].Pop();
-							break;
-						}
-					}
-					popCount--;
-					popTime = 150;
-				}
-				else {
-					popTime--;
-				}
-			}
-			else {
-				if (wave == 0) {
-					wave = 1;
-				}
-			}
-		}
-		else {
-			waitTimer--;
-		}
+		//if (waitTimer == 0) {
+		//	if (popCount > 0) {
+		//		if (popTime == 0) {
+		//			for (int i = 0; i < _countof(enemys); i++) {
+		//				if (enemys[i].isDead == true) {
+		//					enemys[i].Pop();
+		//					break;
+		//				}
+		//			}
+		//			popCount--;
+		//			popTime = 150;
+		//		}
+		//		else {
+		//			popTime--;
+		//		}
+		//	}
+		//	else {
+		//		if (wave == 0) {
+		//			wave = 1;
+		//		}
+		//	}
+		//}
+		//else {
+		//	waitTimer--;
+		//}
 		//ウェーブ&勝利判定
-		if (wave >= 0 && popCount == 0) {
+		/*if (wave >= 0 && popCount == 0) {
 			if (CheckAlive(enemys) == true) {
 				if (wave < 3) {
 					wave++;
@@ -173,7 +175,7 @@ void GameScene::Update() {
 					scene = 2;
 				}
 			}
-		}
+		}*/
 
 
 		ai = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
@@ -260,15 +262,15 @@ void GameScene::Update() {
 
 		if (input_->PushKey(DIK_DOWN) && kDistancePlayerTo3DReticle < 25) {
 			kDistancePlayerTo3DReticle += 0.1;
-			if (-9 < kDistancePlayerTo3DReticle && kDistancePlayerTo3DReticle < 5) {
+			/*if (-9 < kDistancePlayerTo3DReticle && kDistancePlayerTo3DReticle < 5) {
 				kDistancePlayerTo3DReticle = 5;
-			}
+			}*/
 		}
 		else if (input_->PushKey(DIK_UP)) {
 			kDistancePlayerTo3DReticle -= 0.1;
-			if (kDistancePlayerTo3DReticle < 5) {
+			/*if (kDistancePlayerTo3DReticle < 5) {
 				kDistancePlayerTo3DReticle = -10;
-			}
+			}*/
 		}
 
 
@@ -287,6 +289,10 @@ void GameScene::Update() {
 		DebugText::GetInstance()->SetPos(30, 40);
 		DebugText::GetInstance()->Printf(
 			"wave : %d", wave);
+
+		DebugText::GetInstance()->SetPos(30, 200);
+		DebugText::GetInstance()->Printf(
+			"isDead : %d", enemys->isDead);
 
 		Reticle3D();
 
@@ -348,10 +354,10 @@ void GameScene::Update() {
 			if (a <= lenR) {
 
 				if (enemys[i].isDead == false) {
-					HomeOnColision();
+					/*HomeOnColision();*/
 				}
 				// 敵弾の衝突時コールバックを呼び出す
-				enemys[i].OnColision();
+				/*enemys[i].OnColision();*/
 			}
 		}
 
@@ -424,9 +430,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	if (scene == 1) {
-		model_->Draw(objHome_, viewProjection_, textureHandle_[2]);
+		//model_->Draw(objHome_, viewProjection_, textureHandle_[2]);
 		model_->Draw(worldTransforms_[1], viewProjection_, textureHandle_[5]);
-		model_->Draw(floor_, viewProjection_, textureHandle_[1]);
+		//model_->Draw(floor_, viewProjection_, textureHandle_[1]);
 
 		model_->Draw(worldTransform3DReticle_, viewProjection_, textureHandle_[4]);
 		for (int i = 0; i < _countof(enemys); i++) {
@@ -563,19 +569,19 @@ void GameScene::HomeOnColision() {
 	homeLife--;
 }
 
-int GameScene::CheckAlive(Enemy enemys[]) {
-	int aliveNum = 0;
-
-	for (int i = 0; i < 50; i++) {
-		if (enemys[i].isDead == false) {
-			aliveNum++;
-		}
-	}
-
-	if (aliveNum == 0) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
+//int GameScene::CheckAlive(Enemy enemys[]) {
+//	int aliveNum = 0;
+//
+//	for (int i = 0; i < 50; i++) {
+//		if (enemys[i].isDead == false) {
+//			aliveNum++;
+//		}
+//	}
+//
+//	if (aliveNum == 0) {
+//		return true;
+//	}
+//	else {
+//		return false;
+//	}
+//}

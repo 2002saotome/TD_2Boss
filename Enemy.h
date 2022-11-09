@@ -24,6 +24,11 @@ public:
 	int r = 2;
 
 
+	class Player;
+	Player* player_ = nullptr;
+	void SetPlayer(Player* player) { player_ = player; }
+
+
 public:
 	Enemy();
 	~Enemy();
