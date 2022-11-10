@@ -30,6 +30,7 @@ void Enemy::Initialize(Model* model)
 {
 	assert(model);
 	model_ = model;
+
 }
 
 
