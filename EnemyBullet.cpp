@@ -9,19 +9,21 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
     model_ = model;
     velocity_ = velocity;
     //テクスチャ読み込み
-    textureHandle_ = TextureManager::Load("Enemy.png");
+    textureHandle_ = TextureManager::Load("mario.jpg");
     //引数で受け取った初期座標をリセット
     worldTransform_.translation_ = position;
 
     worldTransform_.Initialize();
+   
 }
 
 void EnemyBullet::Update()
 {
     //座標を移動させる
-    worldTransform_.translation_. -= velocity_;
-    worldTransform_.matWorld_ = Affin::matUnit();
-    worldTransform_.matWorld_ = Affin::matWorld(
+    worldTransform_.translation_ -= velocity_;
+
+    worldTransform_.matWorld_ *= Affin::matUnit();
+    worldTransform_.matWorld_ *= Affin::matWorld(
         worldTransform_.translation_
         , worldTransform_.rotation_,
         worldTransform_.scale_);

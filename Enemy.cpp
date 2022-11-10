@@ -41,6 +41,7 @@ void Enemy::Update(Vector3 obj) {
 			return bullet->IsDead();
 		});
 
+	
 	//ベクトル計算
 	CalcVec(obj);
 
@@ -67,6 +68,8 @@ void Enemy::Update(Vector3 obj) {
 	//結果を反映
 	worldTransForm.TransferMatrix();
 
+	Fire();
+
 	//弾更新
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
@@ -75,7 +78,19 @@ void Enemy::Update(Vector3 obj) {
 
 	Hit();
 
-	Fire();
+	
+}
+
+void Enemy::Draw(ViewProjection view, int texHandle)
+{
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	{
+		bullet->Draw(view);
+	}
+
+	if (isDead == false) {
+		model_->Draw(worldTransForm, view, texHandle);
+	}
 }
 
 //void Enemy::Pop() {
@@ -115,6 +130,7 @@ void Enemy::Fire()
 	Vector3 velocity(0, 0, kBulletSpeed);
 	//速度ベクトルを自機の向きに合わせて回転させる
 	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
+
 	//弾を生成し、初期化
 	std::unique_ptr<EnemyBullet>newBullet = std::make_unique<EnemyBullet>();
 	newBullet->Initialize(model_, position, velocity);

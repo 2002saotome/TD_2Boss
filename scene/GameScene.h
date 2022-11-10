@@ -110,7 +110,7 @@ private: // メンバ変数
 	Vector3 myPos_;
 	Vector3 resultRet_;
 	// 敵
-	Enemy enemy_;
+	Enemy enemy_ ;
 
 	int popTime_;
 	int coolTime_;

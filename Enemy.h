@@ -7,7 +7,7 @@
 #include <random>
 
 class Enemy {
-public:
+private:
 	WorldTransform worldTransForm;
 	int isDead;
 	Vector3 enemyTmp;
@@ -25,14 +25,12 @@ public:
 
 	int r = 2;
 
-
 	class Player;
 	Player* player_ = nullptr;
 	void SetPlayer(Player* player) { player_ = player; }
 
 	//弾
 	std::list<std::unique_ptr<EnemyBullet>>bullets_;
-
 
 	Model* model_ = nullptr;
 	//発射タイマー
@@ -44,9 +42,12 @@ public:
 	void CalcVec(Vector3 view);
 	void Initialize(Model* model);
 	void Update(Vector3 obj);
-	void Pop();
+	void Draw(ViewProjection view,int texHandle);
 	void Hit();
 	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.matWorld_); };
 	void OnColision();
 	void Fire();
+	int GetRadius() { return r; }
+	bool IsDead() { return isDead; }
+	void SetDeadFlag(bool flag) { isDead = flag; }
 };

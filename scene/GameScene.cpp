@@ -301,18 +301,18 @@ void GameScene::Update() {
 			"wave : %d", wave_);
 
 		DebugText::GetInstance()->SetPos(30, 200);
-		DebugText::GetInstance()->Printf(
-			" worldTransform_.translation_ : %d,%d,%d", worldTransforms_[0].translation_);
+	/*	DebugText::GetInstance()->Printf(
+			" worldTransform_.translation_ : %f,%f,%f", enemy_.worldTransForm);*/
 
 		Reticle3D();
 
 		Attack();
-	/*	for (int i = 0; i < _countof(bullet_);) {
-			if (bullet_[i])
-			{
-				bullet_[i]->Update(resultRet);
-			}
-		}*/
+		/*	for (int i = 0; i < _countof(bullet_);) {
+				if (bullet_[i])
+				{
+					bullet_[i]->Update(resultRet);
+				}
+			}*/
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
 			bullet->Update(resultRet_);
 		}
@@ -322,7 +322,7 @@ void GameScene::Update() {
 
 		//}
 
-			enemy_.Update(objHome_.translation_);
+		enemy_.Update(objHome_.translation_);
 		/// <summary>
 		/// 弾と敵の当たり判定
 		/// </summary>
@@ -336,10 +336,10 @@ void GameScene::Update() {
 
 			dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
 				std::pow(posB.z - posA.z, 2.0f);
-			lenR_ = std::powf((float)(enemy_.r + bullet->r), 2.0f);
+			lenR_ = std::powf((float)(enemy_.GetRadius() + bullet->r), 2.0f);
 
 			// 球と球の交差判定
-			if (enemy_.isDead == false) {
+			if (enemy_.IsDead() == false) {
 				if (dist_ <= lenR_) {
 					// 自キャラの衝突時コールバックを呼び出す
 					bullet->OnColision();
@@ -357,17 +357,17 @@ void GameScene::Update() {
 		//弾
 	/*	for (int i = 0; i < _countof(enemys); i++) {
 
-			
+
 		}*/
 		posB = enemy_.GetWorldPosition();
 		dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
 			std::pow(posB.z - posA.z, 2.0f);
-		lenR_ = std::powf((float)(enemy_.r + objHomeR_), 2.0f);
+		lenR_ = std::powf((float)(enemy_.GetRadius() + objHomeR_), 2.0f);
 
 		// 球と球の交差判定
 		if (dist_ <= lenR_) {
 
-			if (enemy_.isDead == false) {
+			if (enemy_.IsDead() == false) {
 				/*HomeOnColision();*/
 			}
 			// 敵弾の衝突時コールバックを呼び出す
@@ -395,17 +395,17 @@ void GameScene::Update() {
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene_ = 0;
 			/*for (int i = 0; i < _countof(enemys); i++) {
-				
+
 			}*/
-			if (enemy_.isDead == false) {
-				enemy_.isDead = true;
+			if (enemy_.IsDead() == false) {
+				enemy_.SetDeadFlag(true);
 			}
 		}
 		break;
 
 	case 4://操作説明
 		if (input_->TriggerKey(DIK_SPACE)) {
- 			homeLife_ = 15;
+			homeLife_ = 15;
 			popCount_ = 0;
 			isDamage_ = false;
 			damTimer_ = 0;
@@ -431,7 +431,7 @@ void GameScene::Draw() {
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
-	
+
 	/// </summary>
 
 	// スプライト描画後処理
@@ -457,10 +457,9 @@ void GameScene::Draw() {
 
 
 		//}
-		
-		if (enemy_.isDead == false) {
-			model_->Draw(enemy_.worldTransForm, viewProjection_, textureHandle_[6]);
-		}
+
+		enemy_.Draw(viewProjection_, textureHandle_[6]);
+
 		//弾描画
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
 			bullet->Draw(viewProjection_, textureHandle_[5]);
