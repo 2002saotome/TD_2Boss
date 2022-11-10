@@ -32,7 +32,7 @@ void Enemy::Initialize(Model* model)
 	assert(model);
 	model_enemy = model;
 
-	worldTransForm.scale_ = { 10.0f,10.0f,10.0f };
+	worldTransForm.scale_ = { 10.0f,10.0f,10.0f};
 	//スケーリング行列
 	worldTransForm.matWorld_ = Affin::matScale(worldTransForm.scale_);
 	//行列の転送
