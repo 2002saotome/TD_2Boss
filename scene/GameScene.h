@@ -74,6 +74,7 @@ private: // メンバ変数
 	Sprite* gameOver_ = nullptr;
 	Sprite* Player = nullptr;
 	Model* model_ = nullptr;
+	Model* model_enemy = nullptr;
 
 	WorldTransform objHome_;
 	int objHomeR_ = 4;			// 中心ブロック半径

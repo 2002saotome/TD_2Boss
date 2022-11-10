@@ -36,6 +36,8 @@ GameScene::~GameScene() {
 	delete gameWin_;
 	delete gameOver_;
 	delete model_;
+
+	delete model_enemy;
 }
 
 void GameScene::Initialize() {
@@ -66,7 +68,7 @@ void GameScene::Initialize() {
 	Player = Sprite::Create(textureHandle_[10], { 0,0 });
 	//3Dモデルの生成
 	model_ = Model::Create();
-
+	model_enemy = Model::Create();
 	// 変数初期化
 
 	//ワールドトランスフォームの初期化
@@ -88,7 +90,7 @@ void GameScene::Initialize() {
 	worldTransforms_[1].translation_ = { 0,15,15 };
 	worldTransforms_[1].parent_ = &worldTransforms_[0];
 
-
+	model_enemy = Model::CreateFromOBJ("test");
 
 	for (int i = 2; i < 10; i++) {
 		worldTransforms_[i].Initialize();
@@ -104,7 +106,7 @@ void GameScene::Initialize() {
 	viewProjection_.UpdateMatrix();
 
 	//敵キャラに自キャラのアドレスを渡す
-	enemy_.Initialize(model_);
+	enemy_.Initialize(model_enemy);
 
 	scene_ = 0;
 }
@@ -301,8 +303,8 @@ void GameScene::Update() {
 			"wave : %d", wave_);
 
 		DebugText::GetInstance()->SetPos(30, 200);
-	/*	DebugText::GetInstance()->Printf(
-			" worldTransform_.translation_ : %f,%f,%f", enemy_.worldTransForm);*/
+		/*	DebugText::GetInstance()->Printf(
+				" worldTransform_.translation_ : %f,%f,%f", enemy_.worldTransForm);*/
 
 		Reticle3D();
 
@@ -458,7 +460,7 @@ void GameScene::Draw() {
 
 		//}
 
-		enemy_.Draw(viewProjection_, textureHandle_[6]);
+		enemy_.Draw(viewProjection_);
 
 		//弾描画
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {

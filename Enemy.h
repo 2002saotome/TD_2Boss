@@ -34,7 +34,7 @@ class Enemy {
 	std::list<std::unique_ptr<EnemyBullet>>bullets_;
 
 
-	Model* model_ = nullptr;
+	Model* model_enemy = nullptr;
 	//発射タイマー
 	int32_t fileTimer = 10;
 
@@ -45,7 +45,7 @@ public:
 	void Initialize(Model* model);
 	void Update(Vector3 obj);
 	void Pop();
-	void Draw(ViewProjection view,int texHandle);
+	void Draw(ViewProjection view);
 	void Hit();
 	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.matWorld_); };
 	void OnColision();
