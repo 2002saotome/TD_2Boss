@@ -36,7 +36,7 @@ class Enemy {
 
 	Model* model_ = nullptr;
 	//発射タイマー
-	int32_t fileTimer = 0;
+	int32_t fileTimer = 10;
 
 public:
 	Enemy();
