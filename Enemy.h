@@ -7,7 +7,7 @@
 #include <random>
 
 class Enemy {
-public:
+	private:
 	WorldTransform worldTransForm;
 	int isDead;
 	Vector3 enemyTmp;
@@ -45,8 +45,13 @@ public:
 	void Initialize(Model* model);
 	void Update(Vector3 obj);
 	void Pop();
+	void Draw(ViewProjection view,int texHandle);
 	void Hit();
 	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.matWorld_); };
 	void OnColision();
 	void Fire();
+	
+	int GetRadius() { return r; }
+	bool IsDead() { return isDead; }
+	void SetDeadFlag(bool flag) { isDead = flag; }
 };

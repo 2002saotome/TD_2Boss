@@ -66,6 +66,8 @@ void Enemy::Update(Vector3 obj) {
 
 	//åãâ ÇîΩâf
 	worldTransForm.TransferMatrix();
+	
+	Fire();
 
 	//íeçXêV
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
@@ -74,9 +76,8 @@ void Enemy::Update(Vector3 obj) {
 	}
 
 	Hit();
-
-	Fire();
 }
+
 
 //void Enemy::Pop() {
 //	if (isDead == true) {
@@ -95,6 +96,20 @@ void Enemy::Update(Vector3 obj) {
 //		worldTransForm.translation_ = { value,0,value2 };
 //	}
 //}
+
+void Enemy::Draw(ViewProjection view, int texHandle)
+{
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	{
+		bullet->Draw(view);
+	}
+
+	if (isDead == false)
+	{
+		model_->Draw(worldTransForm, view, texHandle);
+	}
+}
+
 
 void Enemy::Hit() {
 	//if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
