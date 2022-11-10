@@ -66,8 +66,16 @@ void Enemy::Update(Vector3 obj) {
 
 	//結果を反映
 	worldTransForm.TransferMatrix();
-	
-	Fire();
+
+	fileTimer--;
+	//指定時間に達した
+	if (fileTimer <= 0)
+	{
+		//弾の発射
+		Fire();
+		//発射タイマーを初期化
+		fileTimer = 10;
+	}
 
 	//弾更新
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
@@ -126,8 +134,9 @@ void Enemy::Fire()
 	//敵の座標コピー
 	Vector3 position = worldTransForm.translation_;
 	//弾の速度
-	const float kBulletSpeed = 1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	const float kBulletSpeed_z = 0.1f;
+	const float kBulletSpeed_y = -0.1f;
+	Vector3 velocity(0, kBulletSpeed_y, kBulletSpeed_z);
 	//速度ベクトルを自機の向きに合わせて回転させる
 	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
 	//弾を生成し、初期化
