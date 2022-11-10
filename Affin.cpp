@@ -195,11 +195,11 @@ Vector3 Affin::VecMat(Vector3 vec, Matrix4 mat) {
 Vector3 Affin::VecMat3D(Vector3 vec, Matrix4 mat) {
 	Vector3 Result = { 0, 0, 0 };
 
-	Result.x = vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0] * 1 * mat.m[3][0];
+	Result.x = vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0];
 
-	Result.y = vec.x * mat.m[0][1] + vec.y * mat.m[1][1] + vec.z * mat.m[2][1] * 1 * mat.m[3][1];
+	Result.y = vec.x * mat.m[0][1] + vec.y * mat.m[1][1] + vec.z * mat.m[2][1];
 
-	Result.z = vec.x * mat.m[0][2] + vec.y * mat.m[1][2] + vec.z * mat.m[2][2] * 1 * mat.m[3][2];
+	Result.z = vec.x * mat.m[0][2] + vec.y * mat.m[1][2] + vec.z * mat.m[2][2];
 
 	return Result;
 }

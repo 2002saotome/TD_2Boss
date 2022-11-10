@@ -75,7 +75,7 @@ void Enemy::Update(Vector3 obj) {
 		bullet->Update();
 	}
 
-	Hit();
+	//Hit();
 }
 
 
@@ -111,15 +111,15 @@ void Enemy::Draw(ViewProjection view, int texHandle)
 }
 
 
-void Enemy::Hit() {
-	//if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
-	//	if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
-	//		if (isDead == false) {
-	//			isDead = true;
-	//		}
-	//	}
-	//}
-}
+//void Enemy::Hit() {
+//	if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
+//		if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
+//			if (isDead == false) {
+//				isDead = true;
+//			}
+//		}
+//	}
+//}
 
 void Enemy::Fire()
 {
@@ -127,7 +127,7 @@ void Enemy::Fire()
 	Vector3 position = worldTransForm.translation_;
 	//弾の速度
 	const float kBulletSpeed = 1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	Vector3 velocity = { 0, 0, kBulletSpeed };
 	//速度ベクトルを自機の向きに合わせて回転させる
 	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
 	//弾を生成し、初期化
