@@ -38,6 +38,8 @@ public:
 	//発射タイマー
 	int32_t fileTimer = 0;
 
+
+
 public:
 	Enemy();
 	~Enemy();

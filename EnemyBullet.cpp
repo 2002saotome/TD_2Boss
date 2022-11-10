@@ -19,7 +19,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 void EnemyBullet::Update()
 {
     //ç¿ïWÇà⁄ìÆÇ≥ÇπÇÈ
-    worldTransform_.translation_. -= velocity_;
+    worldTransform_.translation_-= velocity_;
     worldTransform_.matWorld_ = Affin::matUnit();
     worldTransform_.matWorld_ = Affin::matWorld(
         worldTransform_.translation_

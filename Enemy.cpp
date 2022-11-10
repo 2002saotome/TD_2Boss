@@ -64,8 +64,14 @@ void Enemy::Update(Vector3 obj) {
 		time = 0;
 	}*/
 
+    
+
 	//åãâ ÇîΩâf
 	worldTransForm.TransferMatrix();
+
+
+	Fire();
+
 
 	//íeçXêV
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
@@ -75,7 +81,7 @@ void Enemy::Update(Vector3 obj) {
 
 	Hit();
 
-	Fire();
+	
 }
 
 //void Enemy::Pop() {
@@ -95,6 +101,8 @@ void Enemy::Update(Vector3 obj) {
 //		worldTransForm.translation_ = { value,0,value2 };
 //	}
 //}
+
+
 
 void Enemy::Hit() {
 	//if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
