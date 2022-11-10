@@ -83,7 +83,7 @@ void Enemy::Update(Vector3 obj) {
 		bullet->Update();
 	}
 
-	Hit();
+	//Hit();
 }
 
 
@@ -119,15 +119,15 @@ void Enemy::Draw(ViewProjection view, int texHandle)
 }
 
 
-void Enemy::Hit() {
-	//if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
-	//	if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
-	//		if (isDead == false) {
-	//			isDead = true;
-	//		}
-	//	}
-	//}
-}
+//void Enemy::Hit() {
+//	if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
+//		if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
+//			if (isDead == false) {
+//				isDead = true;
+//			}
+//		}
+//	}
+//}
 
 void Enemy::Fire()
 {
