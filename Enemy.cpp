@@ -11,7 +11,8 @@ Enemy::Enemy() {
 
 }
 
-Enemy::~Enemy() {}
+Enemy::~Enemy() {
+}
 
 void Enemy::CalcVec(Vector3 obj) 
 {
@@ -29,7 +30,13 @@ void Enemy::CalcVec(Vector3 obj)
 void Enemy::Initialize(Model* model)
 {
 	assert(model);
-	model_ = model;
+	model_enemy = model;
+
+	worldTransForm.scale_ = { 10.0f,10.0f,10.0f };
+	//スケーリング行列
+	worldTransForm.matWorld_ = Affin::matScale(worldTransForm.scale_);
+	//行列の転送
+	worldTransForm.TransferMatrix();
 }
 
 
@@ -105,7 +112,7 @@ void Enemy::Update(Vector3 obj) {
 //	}
 //}
 
-void Enemy::Draw(ViewProjection view, int texHandle)
+void Enemy::Draw(ViewProjection view)
 {
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
@@ -114,7 +121,7 @@ void Enemy::Draw(ViewProjection view, int texHandle)
 
 	if (isDead == false)
 	{
-		model_->Draw(worldTransForm, view, texHandle);
+		model_enemy->Draw(worldTransForm, view);
 	}
 }
 
@@ -141,7 +148,7 @@ void Enemy::Fire()
 	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
 	//弾を生成し、初期化
 	std::unique_ptr<EnemyBullet>newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(model_, position, velocity);
+	newBullet->Initialize(model_enemy, position, velocity);
 
 	//弾を登録する
 	bullets_.push_back(std::move(newBullet));
