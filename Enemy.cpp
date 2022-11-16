@@ -122,6 +122,8 @@ void Enemy::Fire()
 
 int Enemy::GetHp(){return Hp_;}
 
+int32_t Enemy::GetTimer() { return fileTimer; }
+
 void Enemy::OnColision() {
 
 	Hp_--;

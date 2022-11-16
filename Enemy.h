@@ -55,4 +55,5 @@ public:
 	void SetDeadFlag(bool flag) { isDead = flag; }
 
 	int GetHp();
+	int32_t GetTimer();
 };
