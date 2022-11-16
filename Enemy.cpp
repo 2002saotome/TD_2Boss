@@ -81,7 +81,7 @@ void Enemy::Update(Vector3 obj) {
 		//弾の発射
 		Fire();
 		//発射タイマーを初期化
-		fileTimer = 10;
+		fileTimer = 50;
 	}
 
 	//弾更新

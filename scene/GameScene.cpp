@@ -84,7 +84,7 @@ void GameScene::Initialize() {
 	//ワールドトランスフォームの初期化(カメラ)
 	worldTransforms_[0].Initialize();
 	worldTransforms_[0].scale_ = { 3,3,3 };
-	worldTransforms_[0].translation_ = { 0,1,0 };
+	worldTransforms_[0].translation_ = { 0,10,0 };
 
 	worldTransforms_[1].Initialize();
 	worldTransforms_[1].translation_ = { 0,15,15 };

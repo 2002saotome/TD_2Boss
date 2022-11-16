@@ -35,7 +35,7 @@ class Enemy {
 
 	Model* model_enemy = nullptr;
 	//発射タイマー
-	int32_t fileTimer = 10;
+	int32_t fileTimer = 50;
 
 public:
 	Enemy();
@@ -43,9 +43,7 @@ public:
 	void CalcVec(Vector3 view);
 	void Initialize(Model* model);
 	void Update(Vector3 obj);
-	void Pop();
 	void Draw(ViewProjection view);
-	void Hit();
 	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.matWorld_); };
 	void OnColision();
 	void Fire();
