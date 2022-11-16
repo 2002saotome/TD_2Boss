@@ -238,6 +238,44 @@ void GameScene::Update() {
 			}*/
 		}
 
+		//カメラアップ
+		if (input_->TriggerKey(DIK_U))
+		{
+			CameraUpFlag = 1;
+			CameraBackFlag = 0;
+		}
+		if (CameraUpFlag == 1)
+		{
+			worldTransforms_[1].translation_.y -= 0.5;
+			worldTransforms_[1].translation_.z -= 0.5;
+		}
+
+		if (worldTransforms_[1].translation_.y < -5 && worldTransforms_[1].translation_.z < -5)
+		{
+			worldTransforms_[1].translation_.y = -5;
+			worldTransforms_[1].translation_.z = -5;
+		}
+
+		
+		//カメラバック
+		if (input_->TriggerKey(DIK_B))
+		{
+			CameraBackFlag = 1;
+			CameraUpFlag = 0;
+		}
+
+		if (CameraBackFlag == 1)
+		{
+			worldTransforms_[1].translation_.y += 0.5;
+			worldTransforms_[1].translation_.z += 0.5;
+		}
+
+		if (worldTransforms_[1].translation_.y > 15 && worldTransforms_[1].translation_.z > 15)
+		{
+			worldTransforms_[1].translation_.y = 15;
+			worldTransforms_[1].translation_.z = 15;
+		}
+
 
 		/*else {
 			kDistancePlayerTo3DReticle = 15;
@@ -255,9 +293,15 @@ void GameScene::Update() {
 		DebugText::GetInstance()->Printf(
 			"wave : %d", wave_);
 
-		DebugText::GetInstance()->SetPos(30, 200);
+		DebugText::GetInstance()->SetPos(30, 240);
 			DebugText::GetInstance()->Printf(
-				" enemy : %d", enemy_.GetHp());
+				" enemyHP : %d", enemy_.GetHp());
+
+			DebugText::GetInstance()->SetPos(30, 200);
+			DebugText::GetInstance()->Printf("worldTransforms_[1].translation_.y: %f", worldTransforms_[1].translation_.y);
+
+			DebugText::GetInstance()->SetPos(30, 220);
+			DebugText::GetInstance()->Printf("worldTransforms_[1].translation_.z: %f", worldTransforms_[1].translation_.z);
 
 		Reticle3D();
 

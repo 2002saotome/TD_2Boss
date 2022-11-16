@@ -120,6 +120,9 @@ private: // メンバ変数
 	int wave_ = 0;
 	int waitTimer_ = 250;
 
+	int CameraUpFlag=0;
+	int CameraBackFlag=0;
+
 	// シーン
 	int scene_ = 0;
 
