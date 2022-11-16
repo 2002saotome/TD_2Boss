@@ -82,12 +82,14 @@ void GameScene::Initialize() {
 	floor_.scale_ = { 150,0.1f,150 };
 
 	//ワールドトランスフォームの初期化(カメラ)
+	//カーソル
 	worldTransforms_[0].Initialize();
 	worldTransforms_[0].scale_ = { 3,3,3 };
-	worldTransforms_[0].translation_ = { 0,10,0 };
+	worldTransforms_[0].translation_ = { 0,15,15 };
 
+	//カメラ側
 	worldTransforms_[1].Initialize();
-	worldTransforms_[1].translation_ = { 0,15,15 };
+	worldTransforms_[1].translation_ = { 0,10,10 };
 	worldTransforms_[1].parent_ = &worldTransforms_[0];
 
 	model_enemy = Model::CreateFromOBJ("test");
@@ -140,55 +142,6 @@ void GameScene::Update() {
 
 		//デスフラグの立った弾を削除
 		bullets_.remove_if([](std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); });
-
-		//敵ポップ
-		//if (waitTimer == 0) {
-		//	if (popCount > 0) {
-		//		if (popTime == 0) {
-		//			for (int i = 0; i < _countof(enemys); i++) {
-		//				if (enemys.isDead == true) {
-		//					enemys.Pop();
-		//					break;
-		//				}
-		//			}
-		//			popCount--;
-		//			popTime = 150;
-		//		}
-		//		else {
-		//			popTime--;
-		//		}
-		//	}
-		//	else {
-		//		if (wave == 0) {
-		//			wave = 1;
-		//		}
-		//	}
-		//}
-		//else {
-		//	waitTimer--;
-		//}
-		//ウェーブ&勝利判定
-		/*if (wave >= 0 && popCount == 0) {
-			if (CheckAlive(enemys) == true) {
-				if (wave < 3) {
-					wave++;
-					if (wave == 3) {
-						popCount = 30;
-					}
-					else if (wave == 2) {
-						popCount = 20;
-					}
-					else if (wave == 1) {
-						popCount = 10;
-					}
-					waitTimer = 250;
-				}
-				else if (wave == 3) {
-					scene = 2;
-				}
-			}
-		}*/
-
 
 		ai_ = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
 		viewProjection_.eye = { ai_.x,ai_.y,ai_.z };
@@ -278,7 +231,7 @@ void GameScene::Update() {
 				kDistancePlayerTo3DReticle = 5;
 			}*/
 		}
-		else if (input_->PushKey(DIK_UP)) {
+		else if (input_->PushKey(DIK_UP) && kDistancePlayerTo3DReticle_ > -1) {
 			kDistancePlayerTo3DReticle_ -= 0.1f;
 			/*if (kDistancePlayerTo3DReticle < 5) {
 				kDistancePlayerTo3DReticle = -10;
@@ -303,8 +256,8 @@ void GameScene::Update() {
 			"wave : %d", wave_);
 
 		DebugText::GetInstance()->SetPos(30, 200);
-		/*	DebugText::GetInstance()->Printf(
-				" worldTransform_.translation_ : %f,%f,%f", enemy_.worldTransForm);*/
+			DebugText::GetInstance()->Printf(
+				" enemy : %d", enemy_.GetHp());
 
 		Reticle3D();
 
@@ -356,11 +309,7 @@ void GameScene::Update() {
 		}
 
 		posA = Affin::GetWorldTrans(objHome_.matWorld_);
-		//弾
-	/*	for (int i = 0; i < _countof(enemys); i++) {
 
-
-		}*/
 		posB = enemy_.GetWorldPosition();
 		dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
 			std::pow(posB.z - posA.z, 2.0f);
@@ -373,7 +322,7 @@ void GameScene::Update() {
 				/*HomeOnColision();*/
 			}
 			// 敵弾の衝突時コールバックを呼び出す
-			/*enemys.OnColision();*/
+			/*enemy_.OnColision();*/
 		}
 		if (homeLife_ == 0) {
 			scene_ = 3;
@@ -452,7 +401,7 @@ void GameScene::Draw() {
 	if (scene_ == 1) {
 		//model_->Draw(objHome_, viewProjection_, textureHandle_[2]);
 		model_->Draw(worldTransforms_[1], viewProjection_, textureHandle_[5]);
-		//model_->Draw(floor_, viewProjection_, textureHandle_[1]);
+		model_->Draw(floor_, viewProjection_, textureHandle_[1]);
 
 		model_->Draw(worldTransform3DReticle_, viewProjection_, textureHandle_[4]);
 		//for (int i = 0; i < _countof(enemys); i++) {
@@ -575,10 +524,10 @@ void GameScene::Reticle3D() {
 
 	worldTransform3DReticle_.TransferMatrix();
 
-	//DebugText::GetInstance()->SetPos(20, 260);
-	//DebugText::GetInstance()->Printf(
-	//	"ReticleObject:(%f,%f,%f)", worldTransform3DReticle_.translation_.x,
-	//	worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+	/*DebugText::GetInstance()->SetPos(20, 260);
+	DebugText::GetInstance()->Printf(
+		"ReticleObject:(%f,%f,%f)", worldTransform3DReticle_.translation_.x,
+		worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);*/
 
 }
 
@@ -589,20 +538,3 @@ void GameScene::HomeOnColision() {
 	}
 	homeLife_--;
 }
-
-//int GameScene::CheckAlive(Enemy enemys[]) {
-//	int aliveNum = 0;
-//
-//	for (int i = 0; i < 50; i++) {
-//		if (enemys.isDead == false) {
-//			aliveNum++;
-//		}
-//	}
-//
-//	if (aliveNum == 0) {
-//		return true;
-//	}
-//	else {
-//		return false;
-//	}
-//}

@@ -8,8 +8,8 @@
 Matrix4 Affin::matUnit() {
 	Matrix4 matUnit;
 
-	matUnit = { 1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.5f, 0.0f, 0.0f,
-			   0.0f, 0.0f, 1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };  
+	matUnit = { 1.2f, 0.0f, 0.0f, 0.0f, 0.0f, 1.2f, 0.0f, 0.0f,
+			   0.0f, 0.0f, 1.2f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };  
 
 	return matUnit;
 }

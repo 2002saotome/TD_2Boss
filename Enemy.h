@@ -37,6 +37,8 @@ class Enemy {
 	//発射タイマー
 	int32_t fileTimer = 50;
 
+	int Hp_ = 100;
+
 public:
 	Enemy();
 	~Enemy();
@@ -51,4 +53,6 @@ public:
 	int GetRadius() { return r; }
 	bool IsDead() { return isDead; }
 	void SetDeadFlag(bool flag) { isDead = flag; }
+
+	int GetHp();
 };

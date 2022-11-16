@@ -7,7 +7,6 @@ Enemy::Enemy() {
 	worldTransForm.translation_ = { 0,0,0 };
 	isDead = false;
 	YTmp = { 0,1,0 };
-	//speed = 0.0004f;
 
 }
 
@@ -58,19 +57,6 @@ void Enemy::Update(Vector3 obj) {
 		worldTransForm.rotation_,
 		worldTransForm.scale_);
 
-	/*if (isDead == false) {
-		time++;
-		if (time == 6) {
-			speed += 0.0001f;
-			time = 0;
-		}
-		worldTransForm.translation_ += enemyFront * speed;
-	}
-	else if (isDead == true) {
-		speed = 0.0008f;
-		time = 0;
-	}*/
-
 	//結果を反映
 	worldTransForm.TransferMatrix();
 
@@ -90,27 +76,7 @@ void Enemy::Update(Vector3 obj) {
 		bullet->Update();
 	}
 
-	//Hit();
 }
-
-
-//void Enemy::Pop() {
-//	if (isDead == true) {
-//		isDead = false;
-//
-//		//乱数生成装置
-//		std::random_device seed_gen;
-//		std::mt19937_64 engine(seed_gen());
-//		std::uniform_real_distribution<float>dist(20.0f, 50.0f);
-//		std::uniform_real_distribution<float>dist2(-1.0f, 1.0f);
-//		
-//		//乱数
-//		float value = dist(engine) * dist2(engine);
-//		float value2 = dist(engine) * dist2(engine);
-//		//
-//		worldTransForm.translation_ = { value,0,value2 };
-//	}
-//}
 
 void Enemy::Draw(ViewProjection view)
 {
@@ -141,8 +107,8 @@ void Enemy::Fire()
 	//敵の座標コピー
 	Vector3 position = worldTransForm.translation_;
 	//弾の速度
-	const float kBulletSpeed_z = 0.1f;
-	const float kBulletSpeed_y = -0.1f;
+	const float kBulletSpeed_z = 0.01f;
+	const float kBulletSpeed_y = -0.01f;
 	Vector3 velocity(0, kBulletSpeed_y, kBulletSpeed_z);
 	//速度ベクトルを自機の向きに合わせて回転させる
 	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
@@ -154,6 +120,14 @@ void Enemy::Fire()
 	bullets_.push_back(std::move(newBullet));
 }
 
+int Enemy::GetHp(){return Hp_;}
+
 void Enemy::OnColision() {
-	isDead = true;
+
+	Hp_--;
+
+	if (Hp_ <= 0)
+	{
+		isDead = true;
+	}
 }
