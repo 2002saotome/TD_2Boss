@@ -104,6 +104,7 @@ private: // メンバ変数
 	float addspeed_ = 0.0f;
 
 
+
 	// 3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 	float kDistancePlayerTo3DReticle_ = 15.0f;
@@ -156,4 +157,11 @@ private: // メンバ変数
 
 	float lenR_ = 0.0f;
 	float dist_ = 0.0f;
+
+	float GameTimer = 3000.0f;
+
+	//サウンドハンドル
+	uint32_t soundHandle_ = 0;
+
+	uint32_t voiceHandle = 0;
 };

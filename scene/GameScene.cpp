@@ -69,7 +69,9 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	model_ = Model::Create();
 	model_enemy = Model::Create();
-	// 変数初期化
+	//サウンドデータの読み込み
+	soundHandle_ = audio_->LoadWave("BGM/Title.wav");
+	audio_->PlayWave(soundHandle_);
 
 	//ワールドトランスフォームの初期化
 	// 中心OBJ
@@ -331,24 +333,17 @@ void GameScene::Update() {
 		DebugText::GetInstance()->SetPos(30, 320);
 		DebugText::GetInstance()->Printf("TimerFlag:%d", TimerFlag);
 
+		DebugText::GetInstance()->SetPos(30, 340);
+		DebugText::GetInstance()->Printf("GameTimer:%f", GameTimer);
+
 
 		Reticle3D();
 
 		Attack();
-		/*	for (int i = 0; i < _countof(bullet_);) {
-				if (bullet_[i])
-				{
-					bullet_[i]->Update(resultRet);
-				}
-			}*/
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
 			bullet->Update(resultRet_);
 		}
 
-		//敵更新
-		//for (int i = 0; i < _countof(enemys); i++) {
-
-		//}
 
 		enemy_.Update(objHome_.translation_);
 		/// <summary>
@@ -356,10 +351,6 @@ void GameScene::Update() {
 		/// </summary>
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
 			posA = bullet->GetWorldPosition();
-			//敵更新
-			/*for (int i = 0; i < _countof(enemys); i++) {
-
-			}*/
 			posB = enemy_.GetWorldPosition();
 
 			dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
@@ -381,23 +372,9 @@ void GameScene::Update() {
 			}
 		}
 
-		posA = Affin::GetWorldTrans(objHome_.matWorld_);
-
-		posB = enemy_.GetWorldPosition();
-		dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
-			std::pow(posB.z - posA.z, 2.0f);
-		lenR_ = std::powf((float)(enemy_.GetRadius() + objHomeR_), 2.0f);
-
-		// 球と球の交差判定
-		if (dist_ <= lenR_) {
-
-			if (enemy_.IsDead() == false) {
-				/*HomeOnColision();*/
-			}
-			// 敵弾の衝突時コールバックを呼び出す
-			/*enemy_.OnColision();*/
-		}
-		if (homeLife_ == 0) {
+		GameTimer--;
+		if (GameTimer <= 0)
+		{
 			scene_ = 3;
 		}
 
@@ -418,9 +395,6 @@ void GameScene::Update() {
 
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene_ = 0;
-			/*for (int i = 0; i < _countof(enemys); i++) {
-
-			}*/
 			if (enemy_.IsDead() == false) {
 				enemy_.SetDeadFlag(true);
 			}
@@ -442,8 +416,7 @@ void GameScene::Update() {
 			TimerFlag = 0;
 			CameraUpFlag = 0;
 			CameraBackFlag = 0;
-			enemy_.GetHp();
-			//textureHandle_[2] = TextureManager::Load("png.png");
+			enemy_.Reset();
 		}
 		break;
 	}

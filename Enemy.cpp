@@ -91,17 +91,6 @@ void Enemy::Draw(ViewProjection view)
 	}
 }
 
-
-//void Enemy::Hit() {
-//	if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
-//		if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
-//			if (isDead == false) {
-//				isDead = true;
-//			}
-//		}
-//	}
-//}
-
 void Enemy::Fire()
 {
 	//敵の座標コピー
@@ -123,6 +112,12 @@ void Enemy::Fire()
 int Enemy::GetHp(){return Hp_;}
 
 int32_t Enemy::GetTimer() { return fileTimer; }
+
+void Enemy::Reset()
+{
+	Hp_ = 100;
+	isDead = false;
+}
 
 void Enemy::OnColision() {
 

@@ -37,7 +37,7 @@ class Enemy {
 	//発射タイマー
 	int32_t fileTimer = 50;
 
-	int Hp_ = 100;
+	int Hp_ = 50;
 
 public:
 	Enemy();
@@ -56,4 +56,5 @@ public:
 
 	int GetHp();
 	int32_t GetTimer();
+	void Reset();
 };
