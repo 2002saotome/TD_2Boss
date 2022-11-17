@@ -268,8 +268,6 @@ void GameScene::Update() {
 				Timer--;
 			}
 
-			//カメラバック
-
 			if (TimerFlag == 1)
 			{
 				if (worldTransforms_[1].translation_.y < -5 && worldTransforms_[1].translation_.z < -5)
@@ -286,6 +284,7 @@ void GameScene::Update() {
 				CameraBackFlag = 1;
 			}
 
+            //カメラバック
 			if (CameraBackFlag == 1)
 			{
 				worldTransforms_[1].translation_.y += 0.5;
@@ -440,6 +439,9 @@ void GameScene::Update() {
 			wave_ = 0;
 			waitTimer_ = 250;
 			Timer = 250;
+			TimerFlag = 0;
+			CameraUpFlag = 0;
+			CameraBackFlag = 0;
 			enemy_.GetHp();
 			//textureHandle_[2] = TextureManager::Load("png.png");
 		}
