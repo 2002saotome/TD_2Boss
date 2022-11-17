@@ -66,13 +66,14 @@ private: // メンバ変数
 	/// </summary>
 	/// 
 	/// 
-	uint32_t textureHandle_[11];
+	uint32_t textureHandle_[12];
 
 	Sprite* title_ = nullptr;
 	Sprite* tutoliar_ = nullptr;
 	Sprite* gameWin_ = nullptr;
 	Sprite* gameOver_ = nullptr;
 	Sprite* Player = nullptr;
+	Sprite* Change = nullptr;
 	Model* model_ = nullptr;
 	Model* model_enemy = nullptr;
 

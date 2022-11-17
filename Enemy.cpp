@@ -115,7 +115,7 @@ int32_t Enemy::GetTimer() { return fileTimer; }
 
 void Enemy::Reset()
 {
-	Hp_ = 100;
+	Hp_ = 50;
 	isDead = false;
 }
 

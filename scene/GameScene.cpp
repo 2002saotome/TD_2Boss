@@ -59,6 +59,7 @@ void GameScene::Initialize() {
 	textureHandle_[8] = TextureManager::Load("manual.png");
 	textureHandle_[9] = TextureManager::Load("end.png");
 	textureHandle_[10] = TextureManager::Load("Player.png");  //追加
+	textureHandle_[11]= TextureManager::Load("Chanse.png");
 
 	//スプライトの生成
 	title_ = Sprite::Create(textureHandle_[7], { 0,0 });
@@ -66,6 +67,7 @@ void GameScene::Initialize() {
 	gameWin_ = Sprite::Create(textureHandle_[9], { 0,0 });
 	gameOver_ = Sprite::Create(textureHandle_[0], { 0,0 });
 	Player = Sprite::Create(textureHandle_[10], { 0,0 });
+	Change = Sprite::Create(textureHandle_[11], { 0,0 });
 	//3Dモデルの生成
 	model_ = Model::Create();
 	model_enemy = Model::Create();
@@ -250,7 +252,7 @@ void GameScene::Update() {
 		{
 		case EnemyMode::Normal:
 
-			if (enemy_.GetHp() < 98)
+			if (enemy_.GetHp() < 30)
 			{
 				CameraUpFlag = 1;
 				enemyMode = EnemyMode::Boss2;
@@ -302,7 +304,7 @@ void GameScene::Update() {
 			break;
 		}
 
-		DebugText::GetInstance()->SetPos(30, 180);
+		/*DebugText::GetInstance()->SetPos(30, 180);
 		DebugText::GetInstance()->Printf(
 			"Kill : %d", killCounter_);
 		DebugText::GetInstance()->SetPos(30, 60);
@@ -331,9 +333,9 @@ void GameScene::Update() {
 		DebugText::GetInstance()->Printf("Timer_:%d", Timer);
 
 		DebugText::GetInstance()->SetPos(30, 320);
-		DebugText::GetInstance()->Printf("TimerFlag:%d", TimerFlag);
+		DebugText::GetInstance()->Printf("TimerFlag:%d", TimerFlag);*/
 
-		DebugText::GetInstance()->SetPos(30, 340);
+		DebugText::GetInstance()->SetPos(30, 60);
 		DebugText::GetInstance()->Printf("GameTimer:%f", GameTimer);
 
 
@@ -375,9 +377,13 @@ void GameScene::Update() {
 		GameTimer--;
 		if (GameTimer <= 0)
 		{
-			scene_ = 3;
+			scene_ = 2;
 		}
 
+		if (enemy_.GetHp()<=0)
+		{
+			scene_ = 3;
+		}
 		break;
 
 #pragma endregion
@@ -417,6 +423,7 @@ void GameScene::Update() {
 			CameraUpFlag = 0;
 			CameraBackFlag = 0;
 			enemy_.Reset();
+			GameTimer = 3000.0f;
 		}
 		break;
 	}
@@ -456,10 +463,6 @@ void GameScene::Draw() {
 		model_->Draw(floor_, viewProjection_, textureHandle_[1]);
 
 		model_->Draw(worldTransform3DReticle_, viewProjection_, textureHandle_[4]);
-		//for (int i = 0; i < _countof(enemys); i++) {
-
-
-		//}
 
 		enemy_.Draw(viewProjection_);
 
@@ -485,6 +488,10 @@ void GameScene::Draw() {
 		break;
 	case 1:
 		Player->Draw();
+		if (CameraUpFlag == 1)
+		{
+			Change->Draw();
+		}
 		break;
 	case 2:
 		gameWin_->Draw();
