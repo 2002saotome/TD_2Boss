@@ -239,50 +239,68 @@ void GameScene::Update() {
 		}
 
 		//カメラアップ
-		if (input_->TriggerKey(DIK_U))
-		{
-			CameraUpFlag = 1;
-			CameraBackFlag = 0;
-		}
-		if (CameraUpFlag == 1)
-		{
-			worldTransforms_[1].translation_.y -= 0.5;
-			worldTransforms_[1].translation_.z -= 0.5;
-		}
+		/*if (input_->TriggerKey(DIK_U))*/
 
-		if (worldTransforms_[1].translation_.y < -5 && worldTransforms_[1].translation_.z < -5)
-		{
-			worldTransforms_[1].translation_.y = -5;
-			worldTransforms_[1].translation_.z = -5;
-		}
-
-		
-		//カメラバック
-		if (input_->TriggerKey(DIK_B))
-		{
-			CameraBackFlag = 1;
-			CameraUpFlag = 0;
-		}
-
-		if (CameraBackFlag == 1)
-		{
-			worldTransforms_[1].translation_.y += 0.5;
-			worldTransforms_[1].translation_.z += 0.5;
-		}
-
-		if (worldTransforms_[1].translation_.y > 15 && worldTransforms_[1].translation_.z > 15)
-		{
-			worldTransforms_[1].translation_.y = 15;
-			worldTransforms_[1].translation_.z = 15;
-		}
+		//初期化
 
 
-		/*else {
-			kDistancePlayerTo3DReticle = 15;
-		}*/
-		/*DebugText::GetInstance()->SetPos(20, 200);
-		DebugText::GetInstance()->Printf(
-			"distance:(%f,", kDistancePlayerTo3DReticle);*/
+		switch (enemyMode)
+		{
+		case EnemyMode::Normal:
+
+			if (enemy_.GetHp() < 98)
+			{
+				CameraUpFlag = 1;
+				enemyMode = EnemyMode::Boss2;
+			}
+
+			break;
+
+		case EnemyMode::Boss2:
+
+			if (CameraUpFlag == 1)
+			{
+				worldTransforms_[1].translation_.y -= 0.5;
+				worldTransforms_[1].translation_.z -= 0.5;
+				TimerFlag = 1;
+
+				//タイマー減らす(5秒)
+				Timer--;
+			}
+
+			//カメラバック
+
+			if (TimerFlag == 1)
+			{
+				if (worldTransforms_[1].translation_.y < -5 && worldTransforms_[1].translation_.z < -5)
+				{
+					worldTransforms_[1].translation_.y = -5;
+					worldTransforms_[1].translation_.z = -5;
+				}
+			}
+
+			if (Timer < 0)
+			{
+				TimerFlag = 0;
+				CameraUpFlag = 0;
+				CameraBackFlag = 1;
+			}
+
+			if (CameraBackFlag == 1)
+			{
+				worldTransforms_[1].translation_.y += 0.5;
+				worldTransforms_[1].translation_.z += 0.5;
+			}
+
+			if (worldTransforms_[1].translation_.y > 15 && worldTransforms_[1].translation_.z > 15)
+			{
+				worldTransforms_[1].translation_.y = 15;
+				worldTransforms_[1].translation_.z = 15;
+			}
+
+			break;
+		}
+
 		DebugText::GetInstance()->SetPos(30, 180);
 		DebugText::GetInstance()->Printf(
 			"Kill : %d", killCounter_);
@@ -293,15 +311,27 @@ void GameScene::Update() {
 		DebugText::GetInstance()->Printf(
 			"wave : %d", wave_);
 
+		DebugText::GetInstance()->SetPos(30, 200);
+		DebugText::GetInstance()->Printf("worldTransforms_[1].translation_.y: %f", worldTransforms_[1].translation_.y);
+
+		DebugText::GetInstance()->SetPos(30, 220);
+		DebugText::GetInstance()->Printf("worldTransforms_[1].translation_.z: %f", worldTransforms_[1].translation_.z);
+
 		DebugText::GetInstance()->SetPos(30, 240);
-			DebugText::GetInstance()->Printf(
-				" enemyHP : %d", enemy_.GetHp());
+		DebugText::GetInstance()->Printf("enemyHP : %d", enemy_.GetHp());
 
-			DebugText::GetInstance()->SetPos(30, 200);
-			DebugText::GetInstance()->Printf("worldTransforms_[1].translation_.y: %f", worldTransforms_[1].translation_.y);
+		DebugText::GetInstance()->SetPos(30, 260);
+		DebugText::GetInstance()->Printf("CameraBackFlag:%d", CameraBackFlag);
 
-			DebugText::GetInstance()->SetPos(30, 220);
-			DebugText::GetInstance()->Printf("worldTransforms_[1].translation_.z: %f", worldTransforms_[1].translation_.z);
+		DebugText::GetInstance()->SetPos(30, 280);
+		DebugText::GetInstance()->Printf("CameraUpFlag:%d", CameraUpFlag);
+
+		DebugText::GetInstance()->SetPos(30, 300);
+		DebugText::GetInstance()->Printf("Timer_:%d", Timer);
+
+		DebugText::GetInstance()->SetPos(30, 320);
+		DebugText::GetInstance()->Printf("TimerFlag:%d", TimerFlag);
+
 
 		Reticle3D();
 
@@ -400,6 +430,7 @@ void GameScene::Update() {
 
 	case 4://操作説明
 		if (input_->TriggerKey(DIK_SPACE)) {
+			//初期化
 			homeLife_ = 15;
 			popCount_ = 0;
 			isDamage_ = false;
@@ -408,6 +439,8 @@ void GameScene::Update() {
 			scene_ = 1;
 			wave_ = 0;
 			waitTimer_ = 250;
+			Timer = 250;
+			enemy_.GetHp();
 			//textureHandle_[2] = TextureManager::Load("png.png");
 		}
 		break;

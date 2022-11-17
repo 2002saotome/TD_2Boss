@@ -31,9 +31,7 @@ private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 
-
 	bool isDead = false;
-
 
 };
 

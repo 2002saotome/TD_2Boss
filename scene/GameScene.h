@@ -122,9 +122,20 @@ private: // メンバ変数
 
 	int CameraUpFlag=0;
 	int CameraBackFlag=0;
+	int TimerFlag = 0;
+
+	enum EnemyMode 
+	{
+		Normal,
+		Boss2,
+	};
+	EnemyMode enemyMode;
 
 	// シーン
 	int scene_ = 0;
+
+	//タイマー
+	int Timer = 250;
 
 	//yの仮ベクトル
 	Vector3 yTmpVec;
