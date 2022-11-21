@@ -1,4 +1,6 @@
 #include "Enemy.h"
+#include "Affin.h"
+#include <cassert>
 
 Enemy::Enemy() {
 	worldTransForm.Initialize();
@@ -6,9 +8,11 @@ Enemy::Enemy() {
 	isDead = false;
 	YTmp = { 0,1,0 };
 	//speed = 0.0004f;
+
 }
 
-Enemy::~Enemy() {}
+Enemy::~Enemy() {
+}
 
 void Enemy::CalcVec(Vector3 obj) 
 {
@@ -23,8 +27,27 @@ void Enemy::CalcVec(Vector3 obj)
 	enemyFront.normalize();
 }
 
+void Enemy::Initialize(Model* model)
+{
+	assert(model);
+	model_enemy = model;
+
+	worldTransForm.scale_ = { 10.0f,10.0f,10.0f };
+	//スケーリング行列
+	worldTransForm.matWorld_ = Affin::matScale(worldTransForm.scale_);
+	//行列の転送
+	worldTransForm.TransferMatrix();
+}
+
 
 void Enemy::Update(Vector3 obj) {
+
+	//デスフラグの立った
+	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)
+		{
+			return bullet->IsDead();
+		});
+
 	//ベクトル計算
 	CalcVec(obj);
 
@@ -51,8 +74,25 @@ void Enemy::Update(Vector3 obj) {
 	//結果を反映
 	worldTransForm.TransferMatrix();
 
-	Hit();
+	fileTimer--;
+	//指定時間に達した
+	if (fileTimer <= 0)
+	{
+		//弾の発射
+		Fire();
+		//発射タイマーを初期化
+		fileTimer = 10;
+	}
+
+	//弾更新
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	{
+		bullet->Update();
+	}
+
+	//Hit();
 }
+
 
 //void Enemy::Pop() {
 //	if (isDead == true) {
@@ -72,14 +112,46 @@ void Enemy::Update(Vector3 obj) {
 //	}
 //}
 
-void Enemy::Hit() {
-	//if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
-	//	if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
-	//		if (isDead == false) {
-	//			isDead = true;
-	//		}
-	//	}
-	//}
+void Enemy::Draw(ViewProjection view)
+{
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	{
+		bullet->Draw(view);
+	}
+
+	if (isDead == false)
+	{
+		model_enemy->Draw(worldTransForm, view);
+	}
+}
+
+
+//void Enemy::Hit() {
+//	if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
+//		if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
+//			if (isDead == false) {
+//				isDead = true;
+//			}
+//		}
+//	}
+//}
+
+void Enemy::Fire()
+{
+	//敵の座標コピー
+	Vector3 position = worldTransForm.translation_;
+	//弾の速度
+	const float kBulletSpeed_z = 0.1f;
+	const float kBulletSpeed_y = -0.1f;
+	Vector3 velocity(0, kBulletSpeed_y, kBulletSpeed_z);
+	//速度ベクトルを自機の向きに合わせて回転させる
+	velocity = Affin::VecMat3D(velocity, worldTransForm.matWorld_);
+	//弾を生成し、初期化
+	std::unique_ptr<EnemyBullet>newBullet = std::make_unique<EnemyBullet>();
+	newBullet->Initialize(model_enemy, position, velocity);
+
+	//弾を登録する
+	bullets_.push_back(std::move(newBullet));
 }
 
 void Enemy::OnColision() {

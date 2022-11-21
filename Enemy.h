@@ -2,10 +2,12 @@
 
 #include "WorldTransform.h"
 #include "Bullet.h"
+#include "EnemyBullet.h"
+
 #include <random>
 
 class Enemy {
-public:
+	private:
 	WorldTransform worldTransForm;
 	int isDead;
 	Vector3 enemyTmp;
@@ -28,14 +30,28 @@ public:
 	Player* player_ = nullptr;
 	void SetPlayer(Player* player) { player_ = player; }
 
+	//弾
+	std::list<std::unique_ptr<EnemyBullet>>bullets_;
+
+
+	Model* model_enemy = nullptr;
+	//発射タイマー
+	int32_t fileTimer = 10;
 
 public:
 	Enemy();
 	~Enemy();
 	void CalcVec(Vector3 view);
+	void Initialize(Model* model);
 	void Update(Vector3 obj);
 	void Pop();
+	void Draw(ViewProjection view);
 	void Hit();
 	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.matWorld_); };
 	void OnColision();
+	void Fire();
+	
+	int GetRadius() { return r; }
+	bool IsDead() { return isDead; }
+	void SetDeadFlag(bool flag) { isDead = flag; }
 };

@@ -34,9 +34,6 @@
     <Filter Include="ソース ファイル\scene">
       <UniqueIdentifier>{e2d0b4b8-24a1-4854-8e5b-bb6ed09f1add}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\scene">
-      <UniqueIdentifier>{8f83101b-6ce3-4c73-a4d3-5052382dedab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\input">
       <UniqueIdentifier>{337d978c-44b1-4af3-811b-c5f6f355f7de}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,9 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\math">
       <UniqueIdentifier>{647f4977-924a-4954-923f-5619e5afc9a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\math\scene">
+      <UniqueIdentifier>{8f83101b-6ce3-4c73-a4d3-5052382dedab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="Vector3.cpp">
       <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBullet.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +138,7 @@
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="scene\GameScene.h">
-      <Filter>ヘッダー ファイル\scene</Filter>
+      <Filter>ヘッダー ファイル\math\scene</Filter>
     </ClInclude>
     <ClInclude Include="input\Input.h">
       <Filter>ヘッダー ファイル\input</Filter>
@@ -168,13 +171,16 @@
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>ヘッダー ファイル\scene</Filter>
+      <Filter>ヘッダー ファイル\math\scene</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>ヘッダー ファイル\scene</Filter>
+      <Filter>ヘッダー ファイル\math\scene</Filter>
     </ClInclude>
     <ClInclude Include="Affin.h">
       <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBullet.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

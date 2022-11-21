@@ -10,7 +10,7 @@
 
 float GameScene::Angle(float angle)
 {
-	return angle * PI / 180;
+	return angle * (float)PI / 180.0f;
 }
 
 
@@ -25,16 +25,16 @@ float Clamp(float min, float max, float num) {
 }
 
 GameScene::GameScene() {
-	popTime = 0;
-	coolTime = 0;
-	killCounter = 0;
+	popTime_ = 0;
+	coolTime_ = 0;
+	killCounter_ = 0;
 }
 
 GameScene::~GameScene() {
-	delete title;
-	delete tutoliar;
-	delete gameWin;
-	delete gameOver;
+	delete title_;
+	delete tutoliar_;
+	delete gameWin_;
+	delete gameOver_;
 	delete model_;
 }
 
@@ -56,12 +56,14 @@ void GameScene::Initialize() {
 	textureHandle_[7] = TextureManager::Load("Title.png");
 	textureHandle_[8] = TextureManager::Load("manual.png");
 	textureHandle_[9] = TextureManager::Load("end.png");
+	textureHandle_[10] = TextureManager::Load("Player.png");  //追加
 
 	//スプライトの生成
-	title = Sprite::Create(textureHandle_[7], { 0,0 });
-	tutoliar = Sprite::Create(textureHandle_[8], { 0,0 });
-	gameWin = Sprite::Create(textureHandle_[9], { 0,0 });
-	gameOver = Sprite::Create(textureHandle_[0], { 0,0 });
+	title_ = Sprite::Create(textureHandle_[7], { 0,0 });
+	tutoliar_ = Sprite::Create(textureHandle_[8], { 0,0 });
+	gameWin_ = Sprite::Create(textureHandle_[9], { 0,0 });
+	gameOver_ = Sprite::Create(textureHandle_[0], { 0,0 });
+	Player = Sprite::Create(textureHandle_[10], { 0,0 });
 	//3Dモデルの生成
 	model_ = Model::Create();
 
@@ -86,11 +88,14 @@ void GameScene::Initialize() {
 	worldTransforms_[1].translation_ = { 0,15,15 };
 	worldTransforms_[1].parent_ = &worldTransforms_[0];
 
+
+
 	for (int i = 2; i < 10; i++) {
 		worldTransforms_[i].Initialize();
 	}
 
 	worldTransform3DReticle_.Initialize();
+
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -99,16 +104,19 @@ void GameScene::Initialize() {
 	viewProjection_.UpdateMatrix();
 
 	//敵キャラに自キャラのアドレスを渡す
+	enemy_.Initialize(model_);
+
+	scene_ = 0;
 }
 
 void GameScene::Update() {
 
-	switch (scene)
+	switch (scene_)
 	{
-#pragma region TITLE
 	case 0:
+#pragma region TITLE
 		if (input_->TriggerKey(DIK_SPACE)) {
-			scene = 4;
+			scene_ = 4;
 		}
 
 		break;
@@ -117,12 +125,14 @@ void GameScene::Update() {
 
 #pragma region GAME SCENE1
 	case 1:
-		if (isDamage == true) {
-			damTimer++;
-			if (damTimer == 30) {
-				isDamage = false;
-				textureHandle_[2] = TextureManager::Load("png.png");
-				damTimer = 0;
+
+#pragma region 
+
+		if (isDamage_ == true) {
+			damTimer_++;
+			if (damTimer_ == 30) {
+				isDamage_ = false;
+				damTimer_ = 0;
 			}
 		}
 
@@ -134,8 +144,8 @@ void GameScene::Update() {
 		//	if (popCount > 0) {
 		//		if (popTime == 0) {
 		//			for (int i = 0; i < _countof(enemys); i++) {
-		//				if (enemys[i].isDead == true) {
-		//					enemys[i].Pop();
+		//				if (enemys.isDead == true) {
+		//					enemys.Pop();
 		//					break;
 		//				}
 		//			}
@@ -178,8 +188,8 @@ void GameScene::Update() {
 		}*/
 
 
-		ai = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
-		viewProjection_.eye = { ai.x,ai.y,ai.z };
+		ai_ = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
+		viewProjection_.eye = { ai_.x,ai_.y,ai_.z };
 		viewProjection_.UpdateMatrix();
 
 		//yの仮ベクトル
@@ -211,27 +221,27 @@ void GameScene::Update() {
 		}
 
 		{
-			addspeed = 0;
+			addspeed_ = 0;
 			// 回転処理
 			if (input_->PushKey(DIK_RIGHT)) {
 
-				if (KEyeSpeed > 0.0f) {
-					KEyeSpeed *= -1;
+				if (KEyeSpeed_ > 0.0f) {
+					KEyeSpeed_ *= -1;
 				}
 				else {
-					addspeed -= 0.2;
+					addspeed_ -= 0.2f;
 				}
 			}
 			else if (input_->PushKey(DIK_LEFT)) {
-				if (KEyeSpeed < 0.0f) {
-					KEyeSpeed *= -1;
+				if (KEyeSpeed_ < 0.0f) {
+					KEyeSpeed_ *= -1;
 				}
 				else {
-					addspeed += 0.2;
+					addspeed_ += 0.2f;
 				}
 			}
 			// 親オブジェクト
-			worldTransforms_[0].rotation_.y += KEyeSpeed + addspeed;
+			worldTransforms_[0].rotation_.y += KEyeSpeed_ + addspeed_;
 		}
 
 
@@ -260,14 +270,14 @@ void GameScene::Update() {
 		//自機のワールド座標から3Dレティクルのワールド座標を計算
 		//自機から3Dレティクルへの距離	
 
-		if (input_->PushKey(DIK_DOWN) && kDistancePlayerTo3DReticle < 25) {
-			kDistancePlayerTo3DReticle += 0.1;
+		if (input_->PushKey(DIK_DOWN) && kDistancePlayerTo3DReticle_ < 25) {
+			kDistancePlayerTo3DReticle_ += 0.1f;
 			/*if (-9 < kDistancePlayerTo3DReticle && kDistancePlayerTo3DReticle < 5) {
 				kDistancePlayerTo3DReticle = 5;
 			}*/
 		}
 		else if (input_->PushKey(DIK_UP)) {
-			kDistancePlayerTo3DReticle -= 0.1;
+			kDistancePlayerTo3DReticle_ -= 0.1f;
 			/*if (kDistancePlayerTo3DReticle < 5) {
 				kDistancePlayerTo3DReticle = -10;
 			}*/
@@ -282,58 +292,60 @@ void GameScene::Update() {
 			"distance:(%f,", kDistancePlayerTo3DReticle);*/
 		DebugText::GetInstance()->SetPos(30, 180);
 		DebugText::GetInstance()->Printf(
-			"Kill : %d", killCounter);
+			"Kill : %d", killCounter_);
 		DebugText::GetInstance()->SetPos(30, 60);
 		DebugText::GetInstance()->Printf(
-			"homeLife : %d", homeLife);
+			"homeLife : %d", homeLife_);
 		DebugText::GetInstance()->SetPos(30, 40);
 		DebugText::GetInstance()->Printf(
-			"wave : %d", wave);
+			"wave : %d", wave_);
 
 		DebugText::GetInstance()->SetPos(30, 200);
-		DebugText::GetInstance()->Printf(
-			"isDead : %d", enemys->isDead);
+	/*	DebugText::GetInstance()->Printf(
+			" worldTransform_.translation_ : %f,%f,%f", enemy_.worldTransForm);*/
 
 		Reticle3D();
 
 		Attack();
-		/*for (int i = 0; i < _countof(bullet_);) {
-			if (bullet_[i])
-			{
-				bullet_[i]->Update(resultRet);
-			}
-		}*/
+		/*	for (int i = 0; i < _countof(bullet_);) {
+				if (bullet_[i])
+				{
+					bullet_[i]->Update(resultRet);
+				}
+			}*/
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
-			bullet->Update(resultRet);
+			bullet->Update(resultRet_);
 		}
 
 		//敵更新
-		for (int i = 0; i < _countof(enemys); i++) {
-			enemys[i].Update(objHome_.translation_);
-		}
+		//for (int i = 0; i < _countof(enemys); i++) {
 
+		//}
+
+		enemy_.Update(objHome_.translation_);
 		/// <summary>
 		/// 弾と敵の当たり判定
 		/// </summary>
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
 			posA = bullet->GetWorldPosition();
 			//敵更新
-			for (int i = 0; i < _countof(enemys); i++) {
-				posB = enemys[i].GetWorldPosition();
+			/*for (int i = 0; i < _countof(enemys); i++) {
 
-				float a = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
-					std::pow(posB.z - posA.z, 2.0f);
-				float lenR = std::pow((enemys[i].r + bullet->r), 2.0);
+			}*/
+			posB = enemy_.GetWorldPosition();
 
-				// 球と球の交差判定
-				if (enemys[i].isDead == false) {
-					if (a <= lenR) {
-						// 自キャラの衝突時コールバックを呼び出す
-						bullet->OnColision();
-						// 敵弾の衝突時コールバックを呼び出す
-						enemys[i].OnColision();
-						killCounter++;
-					}
+			dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
+				std::pow(posB.z - posA.z, 2.0f);
+			lenR_ = std::powf((float)(enemy_.GetRadius() + bullet->r), 2.0f);
+
+			// 球と球の交差判定
+			if (enemy_.IsDead() == false) {
+				if (dist_ <= lenR_) {
+					// 自キャラの衝突時コールバックを呼び出す
+					bullet->OnColision();
+					// 敵弾の衝突時コールバックを呼び出す
+					enemy_.OnColision();
+					killCounter_++;
 				}
 			}
 			if (posA.y < -10) {
@@ -343,60 +355,65 @@ void GameScene::Update() {
 
 		posA = Affin::GetWorldTrans(objHome_.matWorld_);
 		//弾
-		for (int i = 0; i < _countof(enemys); i++) {
+	/*	for (int i = 0; i < _countof(enemys); i++) {
 
-			posB = enemys[i].GetWorldPosition();
-			float a = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
-				std::pow(posB.z - posA.z, 2.0f);
-			float lenR = std::pow((enemys[i].r + objHomeR), 2.0);
 
-			// 球と球の交差判定
-			if (a <= lenR) {
+		}*/
+		posB = enemy_.GetWorldPosition();
+		dist_ = std::pow(posB.x - posA.x, 2.0f) + std::pow(posB.y - posA.y, 2.0f) +
+			std::pow(posB.z - posA.z, 2.0f);
+		lenR_ = std::powf((float)(enemy_.GetRadius() + objHomeR_), 2.0f);
 
-				if (enemys[i].isDead == false) {
-					/*HomeOnColision();*/
-				}
-				// 敵弾の衝突時コールバックを呼び出す
-				/*enemys[i].OnColision();*/
+		// 球と球の交差判定
+		if (dist_ <= lenR_) {
+
+			if (enemy_.IsDead() == false) {
+				/*HomeOnColision();*/
 			}
+			// 敵弾の衝突時コールバックを呼び出す
+			/*enemys.OnColision();*/
 		}
-
-		if (homeLife == 0) {
-			scene = 3;
+		if (homeLife_ == 0) {
+			scene_ = 3;
 		}
-#pragma endregion
 
 		break;
+
+#pragma endregion
+
+#pragma endregion
+
 	case 2:// victory
 
 		if (input_->TriggerKey(DIK_SPACE)) {
-			scene = 0;
+			scene_ = 0;
 		}
 
 		break;
 	case 3:// game over
 
 		if (input_->TriggerKey(DIK_SPACE)) {
-			scene = 0;
-			for (int i = 0; i < _countof(enemys); i++) {
-				if (enemys[i].isDead == false) {
-					enemys[i].isDead = true;
-				}
+			scene_ = 0;
+			/*for (int i = 0; i < _countof(enemys); i++) {
+
+			}*/
+			if (enemy_.IsDead() == false) {
+				enemy_.SetDeadFlag(true);
 			}
 		}
 		break;
 
 	case 4://操作説明
 		if (input_->TriggerKey(DIK_SPACE)) {
-			homeLife = 15;
-			popCount = 0;
-			isDamage = false;
-			damTimer = 0;
-			killCounter = 0;
-			scene = 1;
-			wave = 0;
-			waitTimer = 250;
-			textureHandle_[2] = TextureManager::Load("png.png");
+			homeLife_ = 15;
+			popCount_ = 0;
+			isDamage_ = false;
+			damTimer_ = 0;
+			killCounter_ = 0;
+			scene_ = 1;
+			wave_ = 0;
+			waitTimer_ = 250;
+			//textureHandle_[2] = TextureManager::Load("png.png");
 		}
 		break;
 	}
@@ -414,6 +431,7 @@ void GameScene::Draw() {
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
+
 	/// </summary>
 
 	// スプライト描画後処理
@@ -429,18 +447,18 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	if (scene == 1) {
+	if (scene_ == 1) {
 		//model_->Draw(objHome_, viewProjection_, textureHandle_[2]);
 		model_->Draw(worldTransforms_[1], viewProjection_, textureHandle_[5]);
 		//model_->Draw(floor_, viewProjection_, textureHandle_[1]);
 
 		model_->Draw(worldTransform3DReticle_, viewProjection_, textureHandle_[4]);
-		for (int i = 0; i < _countof(enemys); i++) {
+		//for (int i = 0; i < _countof(enemys); i++) {
 
-			if (enemys[i].isDead == false) {
-				model_->Draw(enemys[i].worldTransForm, viewProjection_, textureHandle_[6]);
-			}
-		}
+
+		//}
+
+		enemy_.Draw(viewProjection_, textureHandle_[6]);
 
 		//弾描画
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
@@ -458,20 +476,21 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	switch (scene) {
+	switch (scene_) {
 	case 0:
-		title->Draw();
+		title_->Draw();
 		break;
 	case 1:
+		Player->Draw();
 		break;
 	case 2:
-		gameWin->Draw();
+		gameWin_->Draw();
 		break;
 	case 3:
-		gameOver->Draw();
+		gameOver_->Draw();
 		break;
 	case 4:
-		tutoliar->Draw();
+		tutoliar_->Draw();
 		break;
 	}
 
@@ -486,30 +505,30 @@ void GameScene::Draw() {
 
 void GameScene::Attack()
 {
-	if (killCounter > 10) {
+	if (killCounter_ > 10) {
 		if (input_->PushKey(DIK_SPACE))
 		{
-			if (coolTime == 0) {
+			if (coolTime_ == 0) {
 				//弾を生成し、初期化
 				std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 
 				//Bullet* newbullet = new Bullet();
-				pos = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
-				pos.y -= 5;
-				ret3DPos = Affin::GetWorldTrans(worldTransform3DReticle_.matWorld_);
-				velo = ret3DPos - pos;
-				velo.normalize();
-				resultRet = velo * newBullet->speed;
-				newBullet->Initialize(model_, pos);
+				pos_ = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
+				pos_.y -= 5;
+				ret3DPos_ = Affin::GetWorldTrans(worldTransform3DReticle_.matWorld_);
+				velo_ = ret3DPos_ - pos_;
+				velo_.normalize();
+				resultRet_ = velo_ * newBullet->speed;
+				newBullet->Initialize(model_, pos_);
 
 				//弾を登録
 				bullets_.push_back(std::move(newBullet));
 
 				//クールタイムをリセット
-				coolTime = 12;
+				coolTime_ = 12;
 			}
 			else {
-				coolTime--;
+				coolTime_--;
 			}
 		}
 	}
@@ -521,13 +540,13 @@ void GameScene::Attack()
 			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 
 			//Bullet* newbullet = new Bullet();
-			pos = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
-			pos.y -= 5;
-			ret3DPos = Affin::GetWorldTrans(worldTransform3DReticle_.matWorld_);
-			velo = ret3DPos - pos;
-			velo.normalize();
-			resultRet = velo * newBullet->speed;
-			newBullet->Initialize(model_, pos);
+			pos_ = Affin::GetWorldTrans(worldTransforms_[1].matWorld_);
+			pos_.y -= 5;
+			ret3DPos_ = Affin::GetWorldTrans(worldTransform3DReticle_.matWorld_);
+			velo_ = ret3DPos_ - pos_;
+			velo_.normalize();
+			resultRet_ = velo_ * newBullet->speed;
+			newBullet->Initialize(model_, pos_);
 
 			//弾を登録
 			bullets_.push_back(std::move(newBullet));
@@ -546,7 +565,7 @@ void GameScene::Reticle3D() {
 	if (len != 0) {
 		offset /= len;
 	}
-	offset *= kDistancePlayerTo3DReticle;
+	offset *= kDistancePlayerTo3DReticle_;
 	worldTransform3DReticle_.translation_ = offset;
 	worldTransform3DReticle_.scale_ = Vector3(0.5f, 0.5f, 0.5f);
 	worldTransform3DReticle_.matWorld_ = Affin::matScale(worldTransform3DReticle_.scale_);
@@ -563,17 +582,17 @@ void GameScene::Reticle3D() {
 
 void GameScene::HomeOnColision() {
 	textureHandle_[2] = TextureManager::Load("red.png");
-	if (isDamage == false) {
-		isDamage = true;
+	if (isDamage_ == false) {
+		isDamage_ = true;
 	}
-	homeLife--;
+	homeLife_--;
 }
 
 //int GameScene::CheckAlive(Enemy enemys[]) {
 //	int aliveNum = 0;
 //
 //	for (int i = 0; i < 50; i++) {
-//		if (enemys[i].isDead == false) {
+//		if (enemys.isDead == false) {
 //			aliveNum++;
 //		}
 //	}
